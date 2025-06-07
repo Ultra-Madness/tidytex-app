@@ -1,8 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useJobs } from './JobContext';
 
+type RootStackParamList = {
+  Home: undefined;
+  SignUp: undefined;
+  Login: undefined;
+  CustomerDashboard: undefined;
+  PostJob: undefined;
+  JobHistory: undefined;
+  CustomerProfile: undefined;
+  JobConfirmation: undefined;
+  Messaging: { userRole: 'customer' | 'provider'; otherName: string };
+};
+
 export default function JobHistoryScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { jobs } = useJobs();
 
   return (
@@ -18,6 +33,9 @@ export default function JobHistoryScreen() {
             <Text style={styles.jobDetail}>{item.date} at {item.time}</Text>
             <Text style={styles.jobDetail}>{item.description}</Text>
             <Text style={styles.jobStatus}>{item.status}</Text>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.getParent()?.navigate('Messaging', { jobId: item.id, userRole: 'customer', customerName: 'Customer', providerName: 'Provider' })} accessibilityLabel="Open chat with provider">
+              <Text style={styles.buttonText}>Message Provider</Text>
+            </TouchableOpacity>
           </View>
         )}
         ListEmptyComponent={<Text style={styles.emptyText}>No jobs found.</Text>}
@@ -70,6 +88,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#aaa',
     marginTop: 40,
+    fontSize: 16,
+  },
+  button: {
+    marginTop: 10,
+    backgroundColor: '#38b6ff',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
     fontSize: 16,
   },
 });

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Alert, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useAuth } from './AuthContext';
 
 // Add navigation type
  type RootStackParamList = {
@@ -23,7 +24,8 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export default function SignUpScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [role, setRole] = useState<'customer' | 'provider'>('customer');
+  const { setRole } = useAuth();
+  const [role, setRoleState] = useState<'customer' | 'provider'>('customer');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -50,14 +52,9 @@ export default function SignUpScreen() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
+      setRole(role); // Set role in context for navigation
       Alert.alert('Sign Up Successful', 'Welcome to TidyTex!', [
-        { text: 'OK', onPress: () => {
-          if (role === 'customer') {
-            navigation.reset({ index: 0, routes: [{ name: 'CustomerDashboard' }] });
-          } else {
-            navigation.reset({ index: 0, routes: [{ name: 'ProviderDashboard' }] });
-          }
-        }}
+        { text: 'OK' }
       ]);
     }, 1000);
   };
@@ -68,13 +65,13 @@ export default function SignUpScreen() {
       <View style={styles.roleSwitchContainer}>
         <TouchableOpacity
           style={[styles.roleButton, role === 'customer' && styles.roleButtonActive]}
-          onPress={() => setRole('customer')}
+          onPress={() => setRoleState('customer')}
         >
           <Text style={styles.roleButtonText}>Customer</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.roleButton, role === 'provider' && styles.roleButtonActive]}
-          onPress={() => setRole('provider')}
+          onPress={() => setRoleState('provider')}
         >
           <Text style={styles.roleButtonText}>Provider</Text>
         </TouchableOpacity>

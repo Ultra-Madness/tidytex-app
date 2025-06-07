@@ -2,12 +2,15 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import AppNavigator from './AppNavigator';
 import { JobProvider } from './JobContext';
+import { AuthProvider } from './AuthContext';
 
 export default function App() {
   return (
-    <JobProvider>
-      <AppNavigator />
-    </JobProvider>
+    <AuthProvider>
+      <JobProvider>
+        <AppNavigator />
+      </JobProvider>
+    </AuthProvider>
   );
 }
 

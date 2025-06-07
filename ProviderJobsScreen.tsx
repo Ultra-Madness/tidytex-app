@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native
 import { useJobs } from './JobContext';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import MessagingScreen from './MessagingScreen';
 
 // Add ProviderJobDetails to RootStackParamList
 type RootStackParamList = {
@@ -12,6 +13,7 @@ type RootStackParamList = {
   ProviderAcceptedJobs: undefined;
   ProviderCompletedJobs: undefined;
   ProviderJobDetails: { jobId: string };
+  Messaging: { userRole: 'customer' | 'provider'; otherName: string };
 };
 
 export default function ProviderJobsScreen() {
@@ -45,6 +47,9 @@ export default function ProviderJobsScreen() {
             </TouchableOpacity>
             <TouchableOpacity style={[styles.acceptButton, { backgroundColor: '#43d9be', marginTop: 8 }]} onPress={() => navigation.navigate('ProviderJobDetails', { jobId: item.id })}>
               <Text style={styles.acceptButtonText}>View Details</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.acceptButton, { backgroundColor: '#bdbdbd', marginTop: 8 }]} onPress={() => navigation.getParent()?.navigate('Messaging', { jobId: item.id, userRole: 'provider', customerName: 'Jane Doe', providerName: 'Provider' })} accessibilityLabel="Open chat with customer">
+              <Text style={styles.acceptButtonText}>Message Customer</Text>
             </TouchableOpacity>
           </View>
         )}

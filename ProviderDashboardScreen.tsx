@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useAuth } from './AuthContext';
 
 // Define the navigation stack type
  type RootStackParamList = {
@@ -10,12 +11,23 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
    ProviderProfile: undefined;
    ProviderAcceptedJobs: undefined;
    ProviderCompletedJobs: undefined;
+   Home: undefined; // Added for logout navigation
  };
 
-export default function ProviderDashboardScreen() {
+// Accept image as a prop
+export default function ProviderDashboardScreen({ image }: { image: string | null }) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { logout } = useAuth();
+
   return (
     <View style={styles.container}>
+      <TouchableOpacity accessibilityLabel="Profile image (change in profile)">
+        <Image
+          source={image ? { uri: image } : require('./assets/splash-icon.png')}
+          style={styles.profileImage}
+          accessibilityLabel="Profile image preview"
+        />
+      </TouchableOpacity>
       <Text style={styles.title}>Provider Dashboard</Text>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ProviderJobs')}>
         <Text style={styles.buttonText}>Available Jobs</Text>
@@ -28,6 +40,9 @@ export default function ProviderDashboardScreen() {
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ProviderProfile')}>
         <Text style={styles.buttonText}>Profile</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={logout} accessibilityLabel="Log out">
+        <Text style={styles.buttonText}>Log Out</Text>
       </TouchableOpacity>
     </View>
   );
@@ -63,5 +78,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: '600',
+  },
+  logoutButton: {
+    backgroundColor: '#e57373', // Soft red
+    marginTop: 16,
+  },
+  profileImage: {
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    alignSelf: 'center',
+    marginBottom: 8,
+    borderWidth: 3,
+    borderColor: '#43d9be',
+    backgroundColor: '#e0f7fa',
   },
 });

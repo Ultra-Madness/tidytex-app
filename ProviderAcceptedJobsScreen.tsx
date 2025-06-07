@@ -1,9 +1,19 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useJobs } from './JobContext';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import MessagingScreen from './MessagingScreen';
+
+type RootStackParamList = {
+  // ...existing code...
+  Messaging: { userRole: 'customer' | 'provider'; otherName: string };
+  // ...existing code...
+};
 
 export default function ProviderAcceptedJobsScreen() {
   const { jobs, setJobs } = useJobs();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const acceptedJobs = jobs.filter(job => job.status === 'Accepted' || job.status === 'In Progress');
 
   const handleStartJob = (id: string) => {
@@ -43,6 +53,9 @@ export default function ProviderAcceptedJobsScreen() {
                 <Text style={styles.actionButtonText}>Mark as Completed</Text>
               </TouchableOpacity>
             )}
+            <TouchableOpacity style={styles.actionButton} onPress={() => navigation.getParent()?.navigate('Messaging', { jobId: item.id, userRole: 'provider', customerName: 'Jane Doe', providerName: 'Provider' })} accessibilityLabel="Open chat with customer">
+              <Text style={styles.actionButtonText}>Message Customer</Text>
+            </TouchableOpacity>
           </View>
         )}
         ListEmptyComponent={<Text style={styles.emptyText}>No accepted jobs yet.</Text>}

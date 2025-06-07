@@ -42,6 +42,13 @@ export default function HomeScreen() {
         <TouchableOpacity style={[styles.button, styles.loginButton]} onPress={() => navigation.navigate('Login')}>
           <Text style={styles.buttonText}>Log In</Text>
         </TouchableOpacity>
+        {/* TEMPORARY: Direct login buttons for dev/testing, remove for production */}
+        <TouchableOpacity style={[styles.button, styles.tempButton]} onPress={() => navigation.reset({ index: 0, routes: [{ name: 'CustomerDashboard' }] })} accessibilityLabel="Dev: Direct Customer Login">
+          <Text style={styles.buttonText}>[DEV] Customer Dashboard</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, styles.tempButton]} onPress={() => navigation.reset({ index: 0, routes: [{ name: 'ProviderDashboard' }] })} accessibilityLabel="Dev: Direct Provider Login">
+          <Text style={styles.buttonText}>[DEV] Provider Dashboard</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -91,6 +98,10 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     backgroundColor: '#43d9be', // Soft green
+  },
+  tempButton: {
+    backgroundColor: '#bdbdbd',
+    marginTop: 4,
   },
   buttonText: {
     color: '#fff',

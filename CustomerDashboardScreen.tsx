@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useAuth } from './AuthContext';
 
 // Define the navigation stack type
 type RootStackParamList = {
@@ -14,10 +15,20 @@ type RootStackParamList = {
   CustomerProfile: undefined;
 };
 
-export default function CustomerDashboardScreen() {
+// Accept image and setImage as props
+export default function CustomerDashboardScreen({ image, setImage }: { image: string | null, setImage: (uri: string | null) => void }) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { logout } = useAuth();
+
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={() => {}} accessibilityLabel="Profile image (change in profile)">
+        <Image
+          source={image ? { uri: image } : require('./assets/splash-icon.png')}
+          style={styles.profileImage}
+          accessibilityLabel="Profile image preview"
+        />
+      </TouchableOpacity>
       <Text style={styles.text}>Customer Dashboard</Text>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PostJob')}>
         <Text style={styles.buttonText}>Post a Job</Text>
@@ -27,6 +38,9 @@ export default function CustomerDashboardScreen() {
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CustomerProfile')}>
         <Text style={styles.buttonText}>Profile</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={logout} accessibilityLabel="Log out">
+        <Text style={styles.buttonText}>Log Out</Text>
       </TouchableOpacity>
     </View>
   );
@@ -62,5 +76,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: '600',
+  },
+  logoutButton: {
+    backgroundColor: '#e57373', // Soft red
+    marginTop: 16,
+  },
+  profileImage: {
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    alignSelf: 'center',
+    marginBottom: 8,
+    borderWidth: 3,
+    borderColor: '#43d9be',
+    backgroundColor: '#e0f7fa',
   },
 });
